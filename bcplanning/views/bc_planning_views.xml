@@ -1,0 +1,357 @@
+<odoo>
+    <!-- List View for bcproject -->
+    <record id="view_bcproject_list" model="ir.ui.view">
+        <field name="name">bcproject.list</field>
+        <field name="model">bcproject</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="job_no"/>
+                <field name="job_desc"/>
+                <field name="number_of_tasks"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View for bcproject with subform for bctask and bcplanningline -->
+    <record id="view_bcproject_form" model="ir.ui.view">
+        <field name="name">bcproject.form</field>
+        <field name="model">bcproject</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="job_no"/>
+                        <field name="job_desc"/>
+                        <field name="number_of_tasks"/>
+                    </group>
+                    <notebook>
+                        <page string="Tasks">
+                            <field name="task_line" mode="list,kanban">
+                                <list>
+                                    <field name="task_no"/>
+                                    <field name="task_desc"/>
+                                </list>
+                                <kanban class="o_kanban_mobile">
+                                    <templates>
+                                        <t t-name="card">
+                                            <div class="ps-0 pe-0">
+                                                <div class="row g-0">
+                                                    <div class="col-10">
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <span class="fw-bold">
+                                                                    <field name="task_no"/>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="text-muted small">
+                                                            <field name="task_desc"/>
+                                                        </div>
+                                                        <div class="mt-1">
+                                                            <table>
+                                                                <tr>
+                                                                    <td>Planning Lines: </td>
+                                                                    <td>
+                                                                        <span class="badge bg-secondary">
+                                                                            <field name="number_of_lines" widget="kanban_count"/>
+                                                                        </span>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                    <field name="job_id"/>
+                                    <field name="task_no"/>
+                                    <field name="task_desc"/>
+                                    <field name="planning_line"/>
+                                    <field name="number_of_lines"/>
+                                </kanban>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Kanban View for bcproject -->
+    <record id="view_bcproject_kanban" model="ir.ui.view">
+        <field name="name">bcproject.kanban</field>
+        <field name="model">bcproject</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card">
+                            <field name="job_no"/>
+                            <div><strong><field name="job_desc"/></strong></div>
+                            <div>Tasks: <field name="number_of_tasks"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- List View for bctask -->
+    <record id="view_bctask_list" model="ir.ui.view">
+        <field name="name">bctask.list</field>
+        <field name="model">bctask</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="task_date"/>
+                <field name="job_id"/>
+                <field name="task_no"/>
+                <field name="task_desc"/>
+                <field name="task_address"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View for bctask with subform for bcplanningline -->
+    <record id="view_bctask_form" model="ir.ui.view">
+        <field name="name">bctask.form</field>
+        <field name="model">bctask</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="task_date"/>
+                        <field name="job_id"/>
+                        <field name="task_no"/>
+                        <field name="task_desc"/>
+                        <field name="task_address"/>
+                    </group>
+                    <notebook>
+                        <page string="Planning Lines">
+                            <field name="planning_line" mode="list,kanban">
+                                <list editable="bottom">
+                                    <field name="id"/>
+                                    <field name="planning_line_lineno"/>
+                                    <field name="planning_line_type"/>
+                                    <!-- show/hide fields based on type using direct attributes -->
+                                    <field name="resource_id"
+                                        invisible="planning_line_type != 'resource'"
+                                        required="planning_line_type == 'resource'"/>
+                                    <field name="product_id"
+                                        invisible="planning_line_type != 'item'"
+                                        required="planning_line_type == 'item'"/>
+                                    <field name="text_value"
+                                        invisible="planning_line_type != 'text'"
+                                        required="planning_line_type == 'text'"/>
+                                    <field name="planning_line_no"/>
+                                    <field name="planning_line_desc"/>                                    
+                                    <field name="quantity"/>
+                                    <field name="depth"/>
+                                </list>
+                                <kanban class="o_kanban_mobile">
+                                    <templates>
+                                        <t t-name="card">
+                                            <div class="ps-0 pe-0">
+                                                <div class="row g-0">
+                                                    <div class="col-2 pe-3">
+                                                        <field name="resource_id" widget="image" options="{'preview_image': 'image_128'}" class="w-100"/>
+                                                    </div>
+                                                    <div class="col-10">
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <span class="fw-bold"><field name="planning_line_no"/></span>
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            <table>
+                                                                <tr><td><field name="product_id"/></td></tr>
+                                                                <tr><td><field name="planning_line_desc"/></td></tr>
+
+                                                                <tr><td><field name="planning_line_type"/></td></tr>
+                                                                <tr><td>
+                                                                    <group>
+                                                                        <!-- show/hide fields based on type using direct attributes -->
+                                                                        <field name="resource_id"
+                                                                            invisible="planning_line_type != 'resource'"
+                                                                            required="planning_line_type == 'resource'"/>
+                                                                        <field name="product_id"
+                                                                            invisible="planning_line_type != 'item'"
+                                                                            required="planning_line_type == 'item'"/>
+                                                                        <field name="text_value"
+                                                                            invisible="planning_line_type != 'text'"
+                                                                            required="planning_line_type == 'text'"/>
+                                                                    </group>
+                                                                </td></tr>
+                                                                <tr><td><span>Quantity: </span><field name="quantity"/></td></tr>
+                                                                <tr><td><span>Depth: </span><field name="depth"/></td></tr>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                    <field name="resource_id"/>
+                                    <field name="planning_line_lineno"/>
+                                    <field name="planning_line_no"/>
+                                    <field name="planning_line_desc"/>
+                                    <field name="task_id"/>
+                                    <field name="product_id"/>
+                                    <field name="quantity"/>
+                                    <field name="depth"/>
+                                </kanban>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Kanban View for bctask -->
+    <record id="view_bctask_kanban" model="ir.ui.view">
+        <field name="name">bctask.kanban</field>
+        <field name="model">bctask</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card">
+                            <div><field name="task_no"/></div>                            
+                            <div><strong><field name="task_desc"/></strong></div>
+                            <div><field name="task_address"/></div>
+                            <div>Project: <field name="job_id"/></div>
+                            <div>
+                                <table>
+                                    <tr>
+                                        <td>Planning Lines: </td>
+                                        <td>
+                                            <span class="badge bg-secondary">
+                                                <field name="number_of_lines" widget="kanban_count"/>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- List View for bcplanningline -->
+    <record id="view_bcplanningline_list" model="ir.ui.view">
+        <field name="name">bcplanningline.list</field>
+        <field name="model">bcplanningline</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="planning_line_lineno"/>                
+                <field name="planning_line_type"/>
+                <!-- show/hide fields based on type using direct attributes -->
+                <field name="resource_id"
+                    invisible="planning_line_type != 'resource'"
+                    required="planning_line_type == 'resource'"/>
+                <field name="product_id"
+                    invisible="planning_line_type != 'item'"
+                    required="planning_line_type == 'item'"/>
+                <field name="text_value"
+                    invisible="planning_line_type != 'text'"
+                    required="planning_line_type == 'text'"/>
+                <field name="planning_line_no"/>
+                <field name="planning_line_desc"/>
+                <field name="job_id"/>
+                <field name="task_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View for bcplanningline -->
+    <record id="view_bcplanningline_form" model="ir.ui.view">
+        <field name="name">bcplanningline.form</field>
+        <field name="model">bcplanningline</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="planning_line_lineno"/>
+                    <field name="planning_line_type"/>
+                    <!-- show/hide fields based on type using direct attributes -->
+                    <field name="resource_id"
+                        invisible="planning_line_type != 'resource'"
+                        required="planning_line_type == 'resource'"/>
+                    <field name="product_id"
+                        invisible="planning_line_type != 'item'"
+                        required="planning_line_type == 'item'"/>
+                    <field name="text_value"
+                        invisible="planning_line_type != 'text'"
+                        required="planning_line_type == 'text'"/>
+                    <field name="planning_line_no"/>
+                    <field name="planning_line_desc"/>
+                    <field name="quantity"/>
+                    <field name="depth"/>
+                    <field name="job_id"/>
+                    <field name="task_id"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <!-- Kanban View for bcplanningline -->
+    <record id="view_bcplanningline_kanban" model="ir.ui.view">
+        <field name="name">bcplanningline.kanban</field>
+        <field name="model">bcplanningline</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card">
+                            <div><field name="planning_line_lineno"/></div>
+                                                        
+                            <div><field name="planning_line_type"/></div>
+                            <div>
+                                <!-- show/hide fields based on type using direct attributes -->
+                                <field name="resource_id"
+                                    invisible="planning_line_type != 'resource'"
+                                    required="planning_line_type == 'resource'"/>
+                                <field name="product_id"
+                                    invisible="planning_line_type != 'item'"
+                                    required="planning_line_type == 'item'"/>
+                                <field name="text_value"
+                                    invisible="planning_line_type != 'text'"
+                                    required="planning_line_type == 'text'"/>
+                            </div>
+                            <div><field name="planning_line_no"/></div>
+                            <div><strong><field name="planning_line_desc"/></strong></div>
+                            <div><field name="quantity"/></div>
+                            <div><field name="depth"/></div>
+                            <div>Task: <field name="task_id"/></div>
+                            <div>Project: <field name="job_id"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Actions and Menus (optional, for navigation) -->
+    <record id="action_bcproject" model="ir.actions.act_window">
+        <field name="name">Projects</field>
+        <field name="res_model">bcproject</field>
+        <field name="view_mode">list,kanban,form</field>
+    </record>
+    <record id="action_bctask" model="ir.actions.act_window">
+        <field name="name">Tasks</field>
+        <field name="res_model">bctask</field>
+        <field name="view_mode">list,kanban,form</field>
+    </record>
+    <record id="action_bcplanningline" model="ir.actions.act_window">
+        <field name="name">Planning Lines</field>
+        <field name="res_model">bcplanningline</field>
+        <field name="view_mode">list,kanban,form</field>
+    </record>
+
+    <menuitem id="menu_bcproject_root" name="Planning" web_icon="bcplanning,static/description/icon.png" sequence="1"/>
+    <menuitem id="menu_bcproject_main" name="Projects" parent="menu_bcproject_root" action="action_bcproject"/>
+    <menuitem id="menu_bctask_main" name="Tasks" parent="menu_bcproject_root" action="action_bctask"/>
+    <menuitem id="menu_bcplanningline_main" name="Planning Lines" parent="menu_bcproject_root" action="action_bcplanningline"/>
+</odoo>

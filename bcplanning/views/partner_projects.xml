@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="web_partner_project_template" name="Partner Project List">
+    <t t-call="website.layout">
+      <div id="project_wrap" class="bcplanning-projects container py-4">
+        <div class="row align-items-center mb-3">
+          <div class="col-md-8">
+            <h1 class="h4 mb-0">Partner Project List</h1>
+            <p class="text-muted mb-0">Projects and open tasks for <strong><t t-esc="partner_name"/></strong></p>
+          </div>
+          <div class="col-md-4 text-md-end mt-3 mt-md-0">
+            <span class="d-inline-block small text-muted me-2">Projects</span>
+            <span class="badge bg-primary" t-esc="number_of_project or 0"/>
+          </div>
+        </div>
+
+        <t t-if="projects and len(projects) &gt; 0">
+          <!-- Desktop table -->
+          <div class="d-none d-md-block">
+            <div class="table-responsive shadow-sm rounded">
+              <table class="table table-hover mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th style="width:80px">ID</th>
+                    <th>Project No.</th>
+                    <th>Project Name</th>
+                    <th class="text-center" style="width:150px"># Tasks</th>
+                    <th class="text-center" style="width:140px">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <t t-foreach="projects" t-as="project">
+                    <tr class="align-middle">
+                      <td class="text-muted"><small><t t-esc="project['id']"/></small></td>
+                      <td class="fw-medium"><t t-esc="project['job_no'] or '-'"/></td>
+                      <td><t t-esc="project['job_desc'] or '-'"/></td>
+                      <td class="text-center"><t t-esc="project['task_count'] or 0"/></td>
+                      <td class="text-center">
+                        <a class="btn btn-sm btn-outline-primary open-project"
+                           t-att-href="'/partner/tasks?job_id=%s&amp;no_date=1' % (project['id'])"
+                           t-att-data-job-id="project['id']"
+                           role="button"
+                           aria-label="Open tasks for project">
+                          <i class="fa fa-list me-1" aria-hidden="true"></i>
+                          <span class="d-none d-sm-inline">Tasks</span>
+                        </a>
+                      </td>
+                    </tr>
+                  </t>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Mobile: cards -->
+          <div class="d-block d-md-none">
+            <div class="row g-3">
+              <t t-foreach="projects" t-as="project">
+                <div class="col-12">
+                  <article class="card h-100 shadow-sm project-card">
+                    <div class="card-body d-flex justify-content-between align-items-start">
+                      <div class="me-3 flex-fill">
+                        <div class="d-flex align-items-center mb-1">
+                          <h3 class="h6 mb-0 text-truncate me-2"><t t-esc="project['job_no']"/></h3>
+                          <span class="badge bg-secondary small" t-esc="'ID: %s' % (project['id'])"/>
+                        </div>
+                        <p class="small text-muted mb-1 text-truncate" t-att-title="project['job_desc']"><t t-esc="project['job_desc'] or '-'"/></p>
+                        <p class="small text-muted mb-0"><strong><t t-esc="project['task_count'] or 0"/></strong> tasks</p>
+                      </div>
+                      <div class="ms-2 text-end">
+                        <a class="btn btn-sm btn-primary open-project"
+                           t-att-href="'/partner/tasks?job_id=%s&amp;no_date=1' % (project['id'])"
+                           t-att-data-job-id="project['id']"
+                           role="button"
+                           aria-label="Open tasks for project">
+                          <i class="fa fa-list" aria-hidden="true"></i>
+                        </a>
+                      </div>
+                    </div>
+                  </article>
+                </div>
+              </t>
+            </div>
+          </div>
+        </t>
+
+        <t t-if="not projects or len(projects) == 0">
+          <div class="text-center py-5 text-muted">
+            <i class="fa fa-folder-open fa-2x mb-3" aria-hidden="true"></i>
+            <div>No projects found.</div>
+            <div class="small">If you think there should be projects here, contact your administrator.</div>
+          </div>
+        </t>
+      </div>
+    </t>
+  </template>
+</odoo>
